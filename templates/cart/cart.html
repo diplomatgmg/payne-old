@@ -1,0 +1,150 @@
+{% extends 'index/base.html' %}
+{% load cart_extras %}
+{% load humanize %}
+{% load thumbnail %}
+{% load users_extras %}
+{% block content %}
+
+	<!-- Main Content Wrapper Start -->
+	<div class="main-content-wrapper" {% if user_cart|length < 4 %}style="height: 645px;"{% endif %}>
+		<div class="page-content-inner ptb--80 pt-md--40 pb-md--60">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-8 mb-md--50">
+						<div class="row no-gutters">
+							<div class="col-12">
+								<div class="table-content table-responsive">
+									<table class="table table-style-2 wishlist-table text-center">
+										<thead>
+										<tr>
+											<th>&nbsp;</th>
+											<th>&nbsp;</th>
+											<th class="text-left">товар</th>
+											<th>цена</th>
+											<th>количество</th>
+											<th>итог</th>
+										</tr>
+										</thead>
+										<tbody>
+
+										{% for cart_item in user_cart %}
+											<tr class="border-top">
+												<td class="product-remove text-left">
+													<a href="{% url 'cart-product-remove' cart_item.product_id %}">
+														<i class="flaticon-cross"></i></a></td>
+												<td class="product-thumbnail text-left">
+													{% thumbnail cart_item.product.image "77x88" crop="center" as im %}
+														<img src="{{ im.url }}"
+														     alt="Product Thumbnail">
+													{% endthumbnail %}
+												</td>
+												<td class="product-name text-left wide-column">
+													<h3>
+														<a href="product-details.html">{{ cart_item.product.name }}</a>
+													</h3>
+												</td>
+												<td class="product__price">
+													{% if cart_item.product.discount %}
+														<s class="product-price-old">{{ cart_item.product.real_price }}
+														</s>&nbsp;&nbsp;
+														<span class="money">{{ cart_item.product.price|intcomma }}</span>
+														<span class="sign">₽</span>
+													{% else %}
+														<span class="money">{{ cart_item.product.price|intcomma }}</span>
+														<span class="sign">₽</span>
+													{% endif %}
+												</td>
+												<td class="">
+													<form method="post"
+													      action="{% url 'change-quantity' cart_item.product.id %}">
+														{% csrf_token %}
+														<label class="product-quantity-custom">
+															<input type="number" class="quantity-input"
+															       value="{{ cart_item.quantity }}"
+															       min="1" max="20" name="quantity">
+														</label>
+													</form>
+												</td>
+												<td class="product__price">
+													<h5>
+														<span class="product-price-wrapper">
+															<span>{{ cart_item.product_price|intcomma }} ₽</span>
+														</span>
+													</h5>
+												</td>
+											</tr>
+										{% endfor %}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						{% if user_cart %}
+							{#								<div class="col-sm-12 text-sm-right" style="text-align-last: center">#}
+							{#									<a href="{% url 'cart-clear' %}" class="cart-form__btn">#}
+							{#										Очистить корзину</a>#}
+							{#								</div>#}
+							<div class="row no-gutters border-top pt--20 mt--20">
+								<div class="col-sm-6">
+									<div class="coupon">
+										<form action="{% url 'apply-promo' %}" method="get">
+											<input type="text" id="id_promo_code" name="promo_code"
+											       class="cart-form__input" value="{{ request.session.promo_code }}"
+											       placeholder="Промокод">
+											<button type="submit" class="cart-form__btn">Применить</button>
+										</form>
+									</div>
+								</div>
+								<div class="col-sm-6 text-sm-right">
+									<a href="{% url 'cart-clear' %}" type="submit" class="cart-form__btn">Очистить
+										корзину</a>
+								</div>
+							</div>
+						{% endif %}
+					</div>
+					<div class="col-lg-4">
+						<div class="cart-collaterals">
+							<div class="cart-totals">
+								<div class="cart-calculator__item ">
+									<div class="cart-calculator__item--head">
+										<h2>Итого</h2>
+									</div>
+									<div class="cart-calculator__item--value">
+										{% if request.session.promo_code %}
+
+											<s><h4 class="money product-price-wrapper"
+											       style="text-align: right">{{ user_cart.total_price|intcomma }}</h4>
+											</s>
+											<h2 class="money product-price-wrapper"
+											    style="text-align: right">
+												<strong>
+													{% cart_promo user_cart request.session.promo_code %} ₽
+												</strong>
+											</h2>
+											<h6 style="text-align: right">
+												Скидка {{ request.session.promo_discount }}%
+											</h6>
+										{% else %}
+											<h2 class="money product-price-wrapper"
+											    style="text-align: right">{{ user_cart.total_price|intcomma }} ₽</h2>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+							{% if  user_cart %}
+								<a href="{% url 'checkout' %}" class="btn btn-size-md btn-shape-square btn-fullwidth">
+									Оформить заказ
+								</a>
+							{% else %}
+								<a href="#" class="btn btn-size-md btn-shape-square btn-fullwidth">
+									<s>Оформить заказ</s>&nbsp;&nbsp;&nbsp;Корзина пуста!
+								</a>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Main Content Wrapper Start -->
+{% endblock %}

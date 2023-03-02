@@ -1,0 +1,170 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html class="no-js" lang="ru">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>{{ title }}</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Favicons -->
+	<link rel="shortcut icon" href="{% static 'assets/img/favicon.ico' %}" type="image/x-icon">
+	<link rel="apple-touch-icon" href="{% static 'assets/img/icon.png' %}">
+	<!-- ************************* CSS Files ************************* -->
+
+	<!-- Vendor CSS -->
+	<link rel="stylesheet" href="{% static 'assets/css/vendor.css' %}">
+
+	<!-- style css -->
+	<link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
+</head>
+
+
+<body>
+<!-- Header Start -->
+<header class="header header-default site-header">
+	<div class="header__outer">
+		<div class="header__inner header--fixed border-bottom-black">
+			<div class="container">
+				<div class="header__main">
+					<div class="header__col header__left">
+						<a href="{% url 'index' %}" class="logo">
+							<figure class="logo--normal">
+								<img src="{% static 'assets/img/logo/logo.png' %}" alt="Logo">
+							</figure>
+						</a>
+					</div>
+					<div class="header__col header__center">
+						<nav class="main-navigation d-none d-lg-block">
+							<ul class="mainmenu">
+								<li class="mainmenu__item menu-item-has-children position-relative">
+									<a href="{% url 'index' %}" class="mainmenu__link border-left">Главная</a>
+								</li>
+								<li class="mainmenu__item menu-item-has-children position-static">
+									<a href="{% url 'shop' %}" class="mainmenu__link border-left">Магазин</a>
+								</li>
+								<li class="mainmenu__item menu-item-has-children position-relative">
+									<a href="{% url 'post-list' %}" class="mainmenu__link border-left">Блог</a>
+								</li>
+								<li class="mainmenu__item">
+									<a href="#"
+									   class="mainmenu__link border-left border-right">Связаться</a>
+								</li>
+								{% if user.is_staff %}
+									<li class="mainmenu__item">
+										<a href="{% url 'admin:index' %}"
+										   class="mainmenu__link border-right"><strong>Админ-панель</strong></a>
+									</li>
+								{% endif %}
+							</ul>
+						</nav>
+					</div>
+					<div class="header__col header__right">
+						<div class="toolbar-item d-none d-lg-block align-self-center">
+							{% if user.is_authenticated %}
+								<a href="{% url 'profile' user.id %}">
+									<strong style="font-size: 20px">Профиль&nbsp;&nbsp;&nbsp;</strong>
+								</a>
+								<a class="border-right-black"></a>
+								<a href="{% url 'logout' %}">&nbsp;&nbsp;&nbsp;Выход</a>
+							{% else %}
+								<a href="{% url 'login' %}" class="toolbar-btn">
+									<span>Вход</span>
+								</a>
+							{% endif %}
+						</div>
+						<div class="toolbar-item d-block d-lg-none">
+							<a href="#offcanvasnav" class="hamburger-icon js-toolbar menu-btn">
+								<span></span>
+								<span></span>
+								<span></span>
+								<span></span>
+								<span></span>
+								<span></span>
+							</a>
+						</div>
+						<div class="toolbar-item">
+							<a href="{% url 'wishlist' %}" class="toolbar-btn">
+                                        <span class="mini-cart-btn__icon">
+                                            <i class="flaticon-heart"></i>
+                                        </span>
+								<sup class="mini-cart-btn__count">
+									{{ wishlist|length }}
+								</sup>
+							</a>
+						</div>
+						<div class="toolbar-item">
+							<a href="{% url 'cart' %}" class="toolbar-btn">
+                                        <span class="mini-cart-btn__icon">
+                                            <i class="flaticon-bag"></i>
+                                        </span>
+								<sup class="mini-cart-btn__count">
+									{{ user_cart|length }}
+								</sup>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="header-sticky-height"></div>
+
+	</div>
+</header>
+<!-- Header End -->
+
+<!-- Main Content -->
+<div class="wrapper">
+	{% block content %} {% endblock %}
+</div>
+<!-- Main Content End -->
+
+<!-- Footer Start-->
+<footer class="footer bg-color pt--35" style="background: #2C2C2CFF">
+	<div class="container ">
+		<div class="row align-self-center">
+			<div class="col mb-md--33">
+				<div class="footer-widget ">
+					<div class="textwidget">
+						<figure class="mb--10">
+							<img src="{% static 'assets/img/logo/logo-white.png' %}" alt="Logo">
+						</figure>
+					</div>
+				</div>
+			</div>
+			<div class="col mb-md--33">
+				<div class="footer-widget text-white">
+					<address> 119021, Москва Город, ул. Льва Толстого, д.16</address>
+				</div>
+			</div>
+			<div class="col mb-md--33">
+				<div class="footer-widget">
+					<a class="text-white">+7 123 456 78 90</a>
+				</div>
+			</div>
+			<div class="col mb-md--33">
+				<div class="footer-widget">
+					<a class="text-white">info@company.com</a>
+					<div class="footer-widget">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="border-bottom"></div>
+		<div class="row ptb--20">
+			<div class="col-12 text-center">
+				<p class="copyright-text text-white">Payne &copy; 2023 all rights reserved</p>
+			</div>
+		</div>
+	</div>
+</footer>
+<!-- Footer End-->
+
+<!-- jQuery JS -->
+<script src="{% static 'assets/js/vendor.js' %}"></script>
+
+<!-- Main JS -->
+<script src="{% static 'assets/js/main.js' %}"></script>
+</body>

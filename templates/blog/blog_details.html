@@ -1,0 +1,211 @@
+{% extends 'index/base.html' %}
+{% load thumbnail %}
+{% load static %}
+
+
+{% block content %}
+	<main class="main-content-wrapper">
+		<div class="inner-page-content">
+			<!-- Single Post Area Start -->
+			<div class="single-post-area pb--65">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-3 order-lg-1">
+							<div class="blog-sidebar pr--15 pr-lg--0 pt--90">
+								<div class="bl-widget author">
+									<div class="inner">
+										<div class="thumb">
+											{% thumbnail object.author.image '336x336' crop='center' as im %}
+												<img src="{{ im.url }}" alt="Author Images">
+											{% endthumbnail %}
+										</div>
+										<div class="info">
+											<h5 class="mb--5">{{ object.author.first_name }} {{ object.author.last_name }}</h5>
+											<h6 class="degne">{{ object.author.username }}</h6>
+											<br>
+											<p class="degne">{{ object.author.about_me }}</p>
+											<div class="autor-meta">
+												<span>Постов <strong>{{ articles|length }}</strong></span>
+												<span>Комментариев <strong>{{ object.author.comments }}</strong></span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-9 order-lg-2 mb-md--50  pt--80 ">
+							<!-- Single Post Start -->
+							<article class="mb--75 mb-md--55 pb--75 pb-md--55 single-post__header">
+								<header class="single-post__header">
+									<div class="single-post__media">
+										<figure class="image">
+											{% thumbnail object.image "800x561" crop="center" as im %}
+												<img src="{{ im.url }}"
+												     alt="Single Post Title"
+												     class="w-100">
+											{% endthumbnail %}
+										</figure>
+									</div>
+									<div class="single-post__header-meta">
+										<span class="posted-on">Опубликован: {{ object.created }}</span>
+									</div>
+								</header>
+								<div class="single-post__info">
+									<div class="row mb--43 mb-md-33">
+										<div class="col-lg-12 col-md-8">
+											<h2>{{ object.title }}</h2>
+											<p>{{ object.content }}</p>
+										</div>
+									</div>
+								</div>
+							</article>
+							<!-- Single Post End -->
+
+							<!-- Comment Area Start -->
+							<section class="comment">
+								<h2 class="comment-title">Комментариев: {{ comments|length }}</h2>
+								<ul class="comment-list mb--45">
+									{#									<li>#}
+									{#										<div class="single-comment">#}
+									{#											<figure class="comment-avatar">#}
+									{#												<img src="{% static 'assets/img/others/avatar-large-2.png' %}"#}
+									{#												     alt="Avatar">#}
+									{#											</figure>#}
+									{#											<div class="comment-info">#}
+									{#												<div class="comment-meta">#}
+									{#													<h4>Carlos</h4>#}
+									{#													<div class="metadata">#}
+									{#														<span class="comment-date">February 07, 2019</span>#}
+									{#														<a href="#" class="comment-reply-link">Reply</a>#}
+									{#													</div>#}
+									{#												</div>#}
+									{#												<div class="comment-content">#}
+									{#													<p>Hi, this is a comment. <br> To delete a comment, just log in and#}
+									{#														view the post's comments. There you will have the option to edit#}
+									{#														or delete them.</p>#}
+									{#												</div>#}
+									{#											</div>#}
+									{#										</div>#}
+									{#									</li>#}
+									{% for comment in comments %}
+										<li>
+											<div class="single-comment">
+												<figure class="comment-avatar">
+													{% thumbnail comment.user.image '94x94' crop='center' as im %}
+														<img src="{{ im.url }}"
+														     alt="Avatar">
+													{% endthumbnail %}
+												</figure>
+												<div class="comment-info">
+													<div class="comment-meta">
+														<h4>{{ comment.user.username }}</h4>
+														<div class="metadata">
+															<span class="comment-reply-link">{{ comment.created }}</span>
+															{% if comment.user.id == user.id %}
+																<a href="{% url 'delete-comment' id_comment=comment.id id_author=object.author.id %}">
+																	<i class="fa fa-close"
+																	   style="margin-left: 20px"></i>
+																</a>
+															{% endif %}
+														</div>
+													</div>
+													<div class="comment-content">
+														<p>{{ comment.content }}</p>
+													</div>
+												</div>
+											</div>
+										</li>
+									{% endfor %}
+								</ul>
+								<div class="comment-respond">
+									{% if not user.is_authenticated %}
+										<h3 class="comment-reply-title">Зарегистрируйтесь, что бы оставлять
+											комментарии!</h3>
+									{% else %}
+										<h3 class="comment-reply-title">Оставить комментарий...</h3>
+										<form action="{% url 'post' object.id %}" class="form comment-form"
+										      method="post">
+											{% csrf_token %}
+											<div class="form__group mb--25 mb-sm--20">
+												<div class="form-row">
+													<div class="col-12">
+														{{ form.comment }}
+													</div>
+												</div>
+											</div>
+											<div class="form__group">
+												<div class="form-row">
+													<div class="col-12">
+														<button type="submit" class="btn btn-size-sm">Оставить</button>
+													</div>
+												</div>
+											</div>
+										</form>
+									{% endif %}
+								</div>
+							</section>
+							<!-- Comment Area End -->
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Single Post Area End -->
+
+			<!-- Related Post Area Start -->
+			<section class="related-post-area mb--80 mb-md--60">
+				<div class="container">
+					<div class="row mb--50">
+						<div class="col-12 text-center">
+							<h2>Популярное за 3 дня</h2>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-12">
+							<div class="element-carousel slick-dot-mt-40 related-post-carousel" data-slick-options='{
+                                    "slidesToShow": 2,
+                                    "slidesToScroll": 1,
+                                    "dots": true,
+                                    "infinite": true,
+                                    "centerMode": true
+                                }' data-slick-responsive='[
+                                    {"breakpoint": 768, "settings": {"slidesToShow": 2}}
+                                ]'>
+
+								{% for popular_post in most_popular %}
+									<div class="item">
+										<div class="related-post">
+											<div class="related-post__inner">
+												<div class="related-post__media">
+													<figure class="image">
+														<a href="blog_details.html">
+															{% thumbnail popular_post.image '370x270' crop='center' as im %}
+																<img src="{{ im.url }}"
+																     alt="Blog Image">
+															{% endthumbnail %}
+														</a>
+													</figure>
+												</div>
+												<div class="related-post__info">
+													<h3 class="related-post__title">
+														<a href="{% url 'post' popular_post.id %}">{{ popular_post.title }}
+														</a>
+													</h3>
+													<span class="related-post__date">{{ popular_post.created }}</span>
+													<br>
+													<span class="related-post__date">Просмотров: {{ popular_post.views }}</span>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								{% endfor %}
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- Related Post Area End -->
+		</div>
+	</main>
+{% endblock %}

@@ -1,0 +1,12 @@
+[flake8]
+max-line-length = 120
+
+per-file-ignores =
+    apps/cart/migrations/*: E501
+    apps/shop/migrations/*: E501
+    apps/users/migrations/*: E501
+    apps/wishlist/migrations/*: E501
+
+
+extend-ignore=
+    F811,

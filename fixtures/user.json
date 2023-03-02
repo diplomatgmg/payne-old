@@ -1,0 +1,28 @@
+[
+{
+    "model": "users.customuser",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$390000$cQ5qU8CbqEbi6Ykpo7NEvc$7lIAYFX/E1NOJsUUC6iRXu5883ZrPumxdfiPxEJotrU=",
+        "last_login": "2023-01-17T21:55:19.531Z",
+        "is_superuser": true,
+        "username": "diplomat",
+        "first_name": "Кирилл",
+        "last_name": "Попов",
+        "is_staff": true,
+        "is_active": true,
+        "image": "",
+        "is_verified_email": false,
+        "date_joined": "2023-01-17T21:54:52.634Z",
+        "email": "diplomatgmg@gmail.com",
+        "phone": "79999999999",
+        "city": "Санкт-Петербург",
+        "street": "Центральная",
+        "house": "3",
+        "building": "5",
+        "apartment": "7",
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]

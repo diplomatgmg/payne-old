@@ -1,0 +1,83 @@
+{% extends 'index/base.html' %}
+{% load humanize %}
+{% load thumbnail %}
+
+{% block content %}
+	<div class="main-content-wrapper" {% if wishlist|length < 4 %}style="height: 645px;"{% endif %}>
+		<div class="page-content-inner ptb--80 ptb-md--60">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<div class="table-content table-responsive">
+							<table class="table table-style-2 wishlist-table text-center">
+								<thead>
+								<tr>
+									<th>&nbsp;</th>
+									<th>&nbsp;</th>
+									<th class="text-left">Товар</th>
+									<th>Наличие</th>
+									<th>Цена</th>
+									<th>&nbsp;</th>
+								</tr>
+								</thead>
+								<tbody>
+
+								{% for wishlist_item in wishlist %}
+									<tr class="border-top">
+										<td class="product-remove text-left"><a
+												href="{% url 'wishlist-remove' wishlist_item.product.id %}"><i
+												class="flaticon-cross"></i></a></td>
+										<td class="product-thumbnail text-left">
+											{% thumbnail wishlist_item.product.image "77x88" crop="center" as im %}
+												<img src="{{ im.url }}"
+												     alt="Product Thumnail">
+											{% endthumbnail %}
+										</td>
+										<td class="product-name text-left wide-column">
+											<h3>
+												<a href="product-details.html">{{ wishlist_item.product.name }}</a>
+											</h3>
+										</td>
+										<td class="product-stock">
+											{% if  wishlist_item.product.amount < 3 %}
+												Очень мало ({{ wishlist_item.product.amount }})
+											{% elif wishlist_item.product.amount < 6 %}
+												Мало ({{ wishlist_item.product.amount }})
+											{% elif wishlist_item.product.amount < 10 %}
+												В наличии ({{ wishlist_item.product.amount }})
+											{% elif wishlist_item.product.amount >= 10 %}
+												Много ({{ wishlist_item.product.amount }})
+											{% endif %}
+										</td>
+										<td class="product-price">
+											{% if wishlist_item.product.discount %}
+												<s>{{ wishlist_item.product.real_price }}</s><br>
+												<strong>{{ wishlist_item.product.price|intcomma }}</strong> ₽
+											{% else %}
+												<span>{{ wishlist_item.product.price|intcomma }}</span> ₽
+											{% endif %}
+										</td>
+										<td class="product-action-btn">
+											<a href="{% url 'cart-add' wishlist_item.product.id %}" class="btn">Добавить
+												в
+												корзину</a>
+										</td>
+									</tr>
+								{% endfor %}
+								</tbody>
+							</table>
+						</div>
+						{% if wishlist %}
+							<div class="row no-gutters border-top pt--20 mt--20">
+								<div class="col-sm-12 text-sm-right" style="text-align-last: center">
+									<a href="{% url 'wishlist-clear' %}" class="cart-form__btn">
+										Очистить избранное</a>
+								</div>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

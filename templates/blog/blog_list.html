@@ -1,0 +1,83 @@
+{% extends 'index/base.html' %}
+{% load blog_extras %}
+{% load static %}
+{% load thumbnail %}
+
+{% block content %}
+	<main class="main-content-wrapper">
+		<div class="inner-page-content ptb--20 ptb-md--60">
+			<div class="container">
+				<div class="row mb--50" style="place-content: center">
+					<div class="row">
+						<div class="col-12">
+							<a href="{% url 'post-create' %}" class="btn">Написать пост</a>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="row">
+							{% for post in object_list %}
+								<div class="col-xl-4 col-lg-6 mb--50">
+									<article class="post format-standard">
+										<div class="post__inner">
+											<div class="post__media">
+												<figure class="image">
+													{% thumbnail post.image "800x561" crop="center" as im %}
+														<img src="{{ im.url }}" alt="post"
+														     class="w-100">
+													{% endthumbnail %}
+													<a href="{% url 'post' post.id %}" class="item-overlay"></a>
+												</figure>
+											</div>
+											<div class="post__info">
+												<h2 class="post__title"><a
+														href="{% url 'post' post.id %}">{{ post.title }}</a>
+												</h2>
+												<div class="post__meta">
+													<span class="posted-on">{{ post.created }}</span>
+													<span class="posted-by"><span>От: </span>
+														<a href="{% url 'post' post.id %}">
+															<strong>{{ post.author.username }}</strong>
+														</a>
+													</span>
+												</div>
+												<div class="post__meta">
+													<span class="posted-on">Просмотров: {{ post.views }}</span>
+												</div>
+												<div class="post__desc">
+													<p>{{ post.content|shortify_post }}</p>
+												</div>
+												<div class="post__footer-meta">
+													<a href="{% url 'post' post.id %}" class="read-more-btn">Подробнее...</a>
+													{% if post.author == user %}
+													<a href="{% url 'delete-post' id_post=post.id %}">
+														<i class="fa fa-close"
+														   style="margin-left: 20px"></i>Удалить
+													</a>
+													{% endif %}
+												</div>
+
+											</div>
+										</div>
+									</article>
+								</div>
+							{% endfor %}
+						</div>
+						<div class="row">
+							<div class="col-12 text-center">
+								<ul class="pagination">
+									{% if is_paginated %}
+										{% for page in paginator.page_range %}
+											<li><a class="page-number" href="?page={{ page }}">{{ page }}</a></li>
+										{% endfor %}
+									{% endif %}
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+{% endblock %}

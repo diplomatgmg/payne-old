@@ -1,0 +1,203 @@
+{% extends 'index/base.html' %}
+{% load humanize %}
+{% load cart_extras %}
+
+
+
+
+{% block content %}
+	<div class="main-content-wrapper">
+		<div class="page-content-inner pt--80 pt-md--60 pb--72 pb-md--60">
+			<div class="container">
+
+				<!-- Promo Code Area Start -->
+				<div class="row">
+					<div class="col-12">
+						<!-- User Action Start -->
+						<div class="user-actions user-actions__coupon">
+							{% if messages %}
+								<div class="message-box mb--10">
+									{% for message in messages %}
+										{% if message.level == 40 %}
+											<p><i class="fa fa-exclamation-circle" style="color: red"></i>
+												{{ message }}
+											</p>
+										{% endif %}
+										{% if message.level == 25 %}
+											<p><i class="fa fa-exclamation-circle" style="color: green"></i>
+												{{ message }}
+											</p>
+										{% endif %}
+									{% endfor %}
+								</div>
+							{% endif %}
+							<div class="message-box mb--30">
+								<p><i class="fa fa-exclamation-circle" style="color: orange"></i> Есть промокод?
+									<a class="expand-btn"
+									   href="#coupon_info"><strong>Введите его.</strong></a></p>
+							</div>
+							<div id="coupon_info" class="user-actions__form hide-in-default">
+								<form action="{% url 'apply-promo' %}" method="get">
+									<p>Если у вас есть промокод, вы можете применить его ниже.</p>
+									<div class="form__group d-sm-flex">
+										<label for="id_promo_code"></label>
+										<input type="text" name="promo_code" class="form__input mr--20 mr-xs--0"
+										       placeholder="Промокод" maxlength="20" id="id_promo_code"
+										       value="{{ request.session.promo_code }}">
+										<button type="submit" class="btn btn-size-sm">Применить</button>
+									</div>
+								</form>
+
+							</div>
+						</div>
+						<!-- User Action End -->
+					</div>
+				</div>
+				<!-- Promo Code Area End -->
+
+				<div class="row">
+					<form action="{% url 'checkout' %}" method="post">
+						{% csrf_token %}
+						<!-- Checkout Area Start -->
+						<div class="col-lg-6" style="float:left">
+							<div class="checkout-title mt--10">
+								<h2>Детали о доставке</h2>
+							</div>
+							<div class="checkout-form">
+								<div class="form-row mb--20">
+									<div class="form__group col-md-6 mb-sm--30">
+										<label for="id_first_name" class="form__label">Имя</label>
+										<input type="text" name="first_name" required
+										       id="id_first_name" class="form__input"
+										       value="{{ user.first_name }}" maxlength="32">
+									</div>
+									<div class="form__group col-md-6">
+										<label for="id_last_name" class="form__label">Фамилия</label>
+										<input type="text" name="last_name" required value="{{ user.last_name }}"
+										       class="form__input" maxlength="31" id="id_last_name">
+									</div>
+								</div>
+								<div class="form-row mb--20">
+									<div class="form__group col-12">
+										<label for="id_city" class="form__label">Город</label>
+										<input type="text" id="id_city" required value="{{ user.city }}"
+										       class="form__input" maxlength="64" name="city">
+									</div>
+								</div>
+								<div class="form-row mb--20">
+									<div class="form__group col-6">
+										<label for="id_street" class="form__label">Улица</label>
+										<input type="text" id="id_street" class="form__input" required
+										       value="{{ user.street }}" maxlength="64" name="street">
+									</div>
+									<div class="form__group col-2">
+										<label for="id_house" class="form__label">Дом</label>
+										<input type="text" id="id_house" class="form__input"
+										       value="{{ user.house }}" maxlength="16" name="house">
+									</div>
+									<div class="form__group col-2">
+										<label for="id_building" class="form__label">Корпус</label>
+										<input type="text" id="id_building" class="form__input"
+										       value="{{ user.building }}" maxlength="16" name="building">
+									</div>
+									<div class="form__group col-2">
+										<label for="id_apartment" class="form__label">Квартира</label>
+										<input type="text" id="id_apartment" class="form__input"
+										       value="{{ user.apartment }}" maxlength="16" name="apartment">
+									</div>
+								</div>
+								<div class="form-row mb--20">
+									<div class="form__group col-6">
+										<label for="id_phone" class="form__label">Номер телефона</label>
+										<input type="tel" id="id_phone" class="form__input" required
+										       value="{{ user.phone }}" maxlength="16" name="phone">
+									</div>
+									<div class="form__group col-6">
+										<label for="id_email" class="form__label">Почта</label>
+										<input type="email" id="id_email" class="form__input" required
+										       value="{{ user.email }}" maxlength="64" name="email">
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="form__group col-12">
+										<label for="id_description" class="form__label">Примечания к заказу</label>
+										<textarea class="form__input form__input--textarea" id="id_description"
+										          placeholder="Пару слов о доставке, примечаний к заказу..."
+										          maxlength="2048" style="height: 180px"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-xl-5 offset-xl-1 col-lg-6 mt-md--40" style="float:left">
+							<div class="order-details">
+								<div class="checkout-title mt--10">
+									<h2>Ваш заказ</h2>
+								</div>
+								<div class="table-content table-responsive mb--30">
+									<table class="table order-table order-table-2">
+										<thead>
+										<tr class="border-bottom">
+											<th>Товар</th>
+											<th class="text-right">Итог</th>
+										</tr>
+										</thead>
+										<tbody>
+										{% for cart_item in user_cart %}
+											<tr>
+												<th><strong>{{ cart_item.product.name }}</strong>
+													({{ cart_item.quantity }} шт.)
+												</th>
+												<td class="text-right">
+													<strong>{{ cart_item.product_price|intcomma }}</strong> ₽
+												</td>
+											</tr>
+										{% endfor %}
+										</tbody>
+										<tfoot>
+
+										<tr class="order-total border-top">
+											<th><h4>Итого</h4></th>
+											<td class="text-right">
+												{% if request.session.promo_code %}
+													<s class="product-price-old">{{ user_cart.total_price }}</s>
+													&nbsp;/&nbsp;
+													<h4>
+														<span class="money">
+															<strong>
+																{% cart_promo user_cart request.session.promo_code %}
+															</strong>
+															<span class="sign">₽</span>
+														</span>
+													</h4>
+													Скидка {{ request.session.promo_discount }}%
+												{% else %}
+													<h4>
+														<span class="money">
+															<strong>
+																{% cart_promo user_cart promo_model.promo_code %}
+															</strong>
+															<span class="sign">₽</span>
+														</span>
+													</h4>
+												{% endif %}
+											</td>
+										</tr>
+										</tfoot>
+									</table>
+								</div>
+								<div class="checkout-payment">
+									<div class="payment-group mt--20">
+										<p class="mb--15">После оформления заказа, наш менеджер свяжется в Вами для
+											уточнения деталей заказа.</p>
+										<button type="submit" class="btn btn-fullwidth">Заказать</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+					<!-- Checkout Area End -->
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

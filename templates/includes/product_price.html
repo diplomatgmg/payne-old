@@ -1,0 +1,11 @@
+{% load humanize %}
+
+{% if product.discount %}
+	<s class="product-price-old">{{ product.real_price }}
+	</s>&nbsp;/&nbsp;
+	<span class="money">{{ product.price|intcomma }}</span>
+	<span class="sign">₽</span>
+{% else %}
+	<span class="money">{{ product.price|intcomma }}</span>
+	<span class="sign">₽</span>
+{% endif %}

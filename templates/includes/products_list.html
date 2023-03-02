@@ -1,0 +1,50 @@
+{% load shop_extras %}
+{% load humanize %}
+{% load thumbnail %}
+<div class="col-xl-3 col-md-4 col-sm-6 mb--50 border">
+	<div class="payne-product">
+		<div class="product__inner">
+			<div class="product__image">
+				<figure class="product__image--holder">
+					{% thumbnail product.image "500x555" crop="center" as im %}
+						<img src="{{ im.url }}"
+						     alt="{{ product.name }}">
+					{% endthumbnail %}
+				</figure>
+				<a href="{% url 'wishlist-add' product.id %}" class="action-btn">
+					{% if product in wishlist.list_products %}
+						<i class="fa fa-heart" style="color: red"></i>
+					{% else %}
+						<i class="fa fa-heart-o"></i>
+					{% endif %}
+					<span class="sr-only">Добавить в желаемое</span>
+				</a>
+				<a href="{% url 'cart-add' product.id %}" class="action-btn">
+					{% if product in user_cart.list_products %}
+						<i class="fa fa-shopping-cart" style="color: #0080ff"></i>
+					{% else %}
+						<i class="fa fa-shopping-cart"></i>
+					{% endif %}
+					<span class="sr-only">Добавить в корзину</span>
+				</a>
+			</div>
+			<div class="product__info">
+				<div class="product__info--left">
+					<h3 class="product__title">
+						<a href="{% url 'product-detail' product.id %}">{{ product.brand }} {{ product.name }}</a>
+					</h3>
+					<div class="product__price">
+						{% include 'includes/product_price.html' %}
+					</div>
+				</div>
+				<div class="product__info--right">
+					<span class="product__rating">
+					<b style="font-size: 15px">{{ product.rating }}</b>
+					<i class="fa fa-star custom-star"
+					   style="color: {{ product.rating|get_color_rating }}"></i>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
